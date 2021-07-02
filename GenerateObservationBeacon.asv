@@ -1,0 +1,28 @@
+%Question2 b
+function [z_beacon,i] = GenerateObservationfromBeacon( mu_x, x_b, d, r_min)
+%===================================================================================================
+% INPUT:
+% mu_x       = mean Robot Location
+% x_b        = Beacons locations (used to find the beacon in range)
+% d          = max possible distacne from beacon to generate observation
+% r_min      = minimal possible distance from beacon 
+%===================================================================================================
+% OUTPUT:
+% z_eacon    = Beacon measurement
+% sigma_v    = observation model covariance
+% r          = range target to landmark (beacon)  
+%===================================================================================================
+
+for i=1:9
+    % Calculate distance from beacons (Range)
+    r = norm(x_b(:,i)-mu_x);
+    mu_b = x_b(:,i)-mu_x ;
+    if r<=d % assuming only one beacon is close to the robot 
+        % Covariance is rangae dependence 
+        sigma_v = (0.01*max(r,r_min))^2*eye(2);
+        z_beacon= mvnrnd(mu_b-mu_x) ,sigma_v);
+        beacon_number=i;
+    end
+end 
+
+end 
